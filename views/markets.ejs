@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CryptoTrack — Markets</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--bg:#faf8f5;--surface:#fff;--surface2:#f5f2ee;--border:#e8e2d9;--text:#1a1510;--muted:#8a8070;--accent:#c8922a;--accent-light:#fef3e2;--green:#2d7a4f;--green-light:#e8f5ee;--red:#c0392b;--red-light:#fdecea;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+
+    /* NAV */
+    nav{position:sticky;top:0;z-index:100;background:rgba(250,248,245,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);height:68px;padding:0 3rem;display:flex;align-items:center;justify-content:space-between}
+    .nav-logo{display:flex;align-items:center;gap:0.7rem;text-decoration:none}
+    .logo-box{width:36px;height:36px;background:var(--text);border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700}
+    .logo-name{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;color:var(--text)}
+    .logo-name span{color:var(--accent)}
+    .nav-links{display:flex;align-items:center;gap:0.5rem}
+    .nav-link{text-decoration:none;color:var(--muted);font-size:0.88rem;font-weight:500;padding:0.5rem 0.9rem;border-radius:8px;transition:all 0.2s}
+    .nav-link:hover{color:var(--text);background:var(--surface2)}
+    .nav-link.active{color:var(--text);background:var(--surface2);font-weight:600}
+    .nav-right{display:flex;align-items:center;gap:1rem}
+    .live-badge{display:flex;align-items:center;gap:0.4rem;background:var(--green-light);color:var(--green);border:1px solid rgba(45,122,79,0.2);border-radius:999px;padding:0.3rem 0.85rem;font-size:0.72rem;font-weight:600}
+    .live-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 1.8s infinite}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}
+    .user-chip{display:flex;align-items:center;gap:0.6rem;background:var(--surface2);border:1px solid var(--border);border-radius:999px;padding:0.35rem 0.9rem 0.35rem 0.5rem;font-size:0.82rem;font-weight:500}
+    .user-avatar{width:26px;height:26px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.7rem;font-weight:700}
+    .logout-btn{text-decoration:none;color:var(--muted);font-size:0.82rem;padding:0.4rem 0.8rem;border:1px solid var(--border);border-radius:8px;transition:all 0.2s}
+    .logout-btn:hover{color:var(--red);border-color:var(--red)}
+
+    /* PAGE */
+    .page{max-width:1200px;margin:0 auto;padding:2.5rem 3rem}
+
+    /* HERO BAR */
+    .page-hero{margin-bottom:2.5rem}
+    .page-hero-top{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:0.5rem}
+    .page-title{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:700;letter-spacing:-0.02em}
+    .page-subtitle{color:var(--muted);font-size:0.9rem;font-weight:300}
+    .refresh-btn{display:flex;align-items:center;gap:0.4rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.5rem 1rem;font-size:0.82rem;font-weight:500;cursor:pointer;color:var(--text);text-decoration:none;transition:all 0.2s}
+    .refresh-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+    /* STATS BAR */
+    .stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2.5rem}
+    .stat-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.3rem 1.5rem;transition:all 0.2s}
+    .stat-box:hover{border-color:var(--accent);transform:translateY(-1px);box-shadow:0 4px 16px rgba(200,146,42,0.08)}
+    .stat-label{font-size:0.68rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem}
+    .stat-value{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:700;line-height:1;letter-spacing:-0.01em}
+    .stat-sub{font-size:0.72rem;color:var(--muted);margin-top:0.2rem}
+    .val-green{color:var(--green)}
+    .val-gold{color:var(--accent)}
+
+    /* COIN TABLE */
+    .section-title{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;margin-bottom:1.2rem;display:flex;align-items:center;gap:0.75rem}
+    .section-count{background:var(--surface2);border:1px solid var(--border);border-radius:999px;padding:0.15rem 0.6rem;font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:600;color:var(--muted)}
+
+    .coin-table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+    .coin-table thead tr{background:var(--surface2)}
+    .coin-table th{padding:0.85rem 1.2rem;text-align:left;font-size:0.68rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border)}
+    .coin-table td{padding:1.1rem 1.2rem;border-bottom:1px solid var(--border);vertical-align:middle}
+    .coin-table tbody tr:last-child td{border-bottom:none}
+    .coin-table tbody tr{transition:background 0.2s;cursor:pointer}
+    .coin-table tbody tr:hover{background:var(--surface2)}
+
+    .coin-cell{display:flex;align-items:center;gap:0.9rem}
+    .coin-icon-box{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;flex-shrink:0}
+    .coin-name-main{font-weight:600;font-size:0.95rem}
+    .coin-name-sym{font-size:0.75rem;color:var(--muted)}
+    .price-val{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700}
+    .vol-val{font-size:0.88rem;color:var(--muted)}
+    .action-btn{display:inline-flex;align-items:center;gap:0.3rem;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.4rem 0.85rem;font-size:0.8rem;font-weight:600;text-decoration:none;color:var(--text);transition:all 0.2s}
+    .action-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .loading-cell{color:var(--muted);font-size:0.85rem;font-style:italic}
+    .error-cell{color:var(--red);font-size:0.85rem}
+
+    /* COIN GRID (visual cards) */
+    .coin-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2.5rem}
+    .coin-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.4rem;text-decoration:none;color:var(--text);transition:all 0.25s;display:block}
+    .coin-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 8px 28px rgba(200,146,42,0.1)}
+    .cc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+    .cc-icon{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:700}
+    .cc-arrow{color:var(--muted);font-size:1.2rem;transition:transform 0.2s}
+    .coin-card:hover .cc-arrow{transform:translate(2px,-2px);color:var(--accent)}
+    .cc-name{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700;margin-bottom:0.15rem}
+    .cc-sym{font-size:0.72rem;color:var(--muted)}
+    .cc-price{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:var(--accent);margin-top:0.8rem}
+    .cc-loading{color:var(--muted);font-size:0.82rem;font-style:italic;margin-top:0.8rem}
+
+    footer{border-top:1px solid var(--border);padding:1.5rem 3rem;display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:0.75rem}
+  </style>
+</head>
+<body>
+  <nav>
+    <a class="nav-logo" href="/markets">
+      <div class="logo-box">C</div>
+      <div class="logo-name">Crypto<span>Track</span></div>
+    </a>
+    <div class="nav-links">
+      <a class="nav-link active" href="/markets">Markets</a>
+      <a class="nav-link" href="/trade">Trade</a>
+    </div>
+    <div class="nav-right">
+      <div class="live-badge"><div class="live-dot"></div>Live</div>
+      <div class="user-chip">
+        <div class="user-avatar"><%= user.name.charAt(0) %></div>
+        <%= user.name %>
+      </div>
+      <a class="logout-btn" href="/logout">Sign out</a>
+    </div>
+  </nav>
+
+  <div class="page">
+    <div class="page-hero">
+      <div class="page-hero-top">
+        <div>
+          <h1 class="page-title">Live Markets</h1>
+          <p class="page-subtitle">Real-time cryptocurrency prices from Blockchain.com Exchange API</p>
+        </div>
+        <a class="refresh-btn" href="/markets">↻ Refresh</a>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-bar">
+      <div class="stat-box">
+        <div class="stat-label">Assets Tracked</div>
+        <div class="stat-value val-gold">6</div>
+        <div class="stat-sub">Cryptocurrencies</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Data Source</div>
+        <div class="stat-value" style="font-size:1.1rem;font-family:'DM Sans',sans-serif;font-weight:600">Blockchain.com</div>
+        <div class="stat-sub">Exchange API v3</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">BTC Price</div>
+        <div class="stat-value val-gold">
+          <% if(prices['BTC-USD'] && prices['BTC-USD'].last_trade_price) { %>
+            $<%= parseFloat(prices['BTC-USD'].last_trade_price).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0}) %>
+          <% } else { %>—<% } %>
+        </div>
+        <div class="stat-sub">Bitcoin</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">ETH Price</div>
+        <div class="stat-value val-green">
+          <% if(prices['ETH-USD'] && prices['ETH-USD'].last_trade_price) { %>
+            $<%= parseFloat(prices['ETH-USD'].last_trade_price).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0}) %>
+          <% } else { %>—<% } %>
+        </div>
+        <div class="stat-sub">Ethereum</div>
+      </div>
+    </div>
+
+    <!-- COIN CARDS -->
+    <div class="section-title">All Assets <span class="section-count">6</span></div>
+    <div class="coin-cards">
+      <% coins.forEach(c => { %>
+      <a class="coin-card" href="/coin/<%= c.symbol.replace('-USD','') %>">
+        <div class="cc-top">
+          <div class="cc-icon" style="background:<%= c.bg %>;color:<%= c.color %>"><%= c.icon %></div>
+          <span class="cc-arrow">↗</span>
+        </div>
+        <div class="cc-name"><%= c.label %></div>
+        <div class="cc-sym"><%= c.symbol %></div>
+        <% if(prices[c.symbol] && prices[c.symbol].last_trade_price) { %>
+          <div class="cc-price">$<%= parseFloat(prices[c.symbol].last_trade_price).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) %></div>
+        <% } else { %>
+          <div class="cc-loading">Loading...</div>
+        <% } %>
+      </a>
+      <% }) %>
+    </div>
+
+    <!-- TABLE -->
+    <div class="section-title">Market Overview</div>
+    <table class="coin-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Asset</th>
+          <th>Price (USD)</th>
+          <th>24h Volume</th>
+          <th>Symbol</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% coins.forEach((c, i) => { const p = prices[c.symbol]; %>
+        <tr onclick="window.location='/coin/<%= c.symbol.replace('-USD','') %>'">
+          <td style="color:var(--muted);font-size:0.85rem"><%= i+1 %></td>
+          <td>
+            <div class="coin-cell">
+              <div class="coin-icon-box" style="background:<%= c.bg %>;color:<%= c.color %>"><%= c.icon %></div>
+              <div>
+                <div class="coin-name-main"><%= c.label %></div>
+                <div class="coin-name-sym"><%= c.symbol %></div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <% if(p && p.last_trade_price) { %>
+              <div class="price-val">$<%= parseFloat(p.last_trade_price).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) %></div>
+            <% } else { %><span class="loading-cell">—</span><% } %>
+          </td>
+          <td>
+            <% if(p && p.volume_24h) { %>
+              <div class="vol-val"><%= parseFloat(p.volume_24h).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) %></div>
+            <% } else { %><span class="loading-cell">—</span><% } %>
+          </td>
+          <td style="font-size:0.82rem;font-weight:600;color:var(--muted)"><%= c.symbol %></td>
+          <td>
+            <a class="action-btn" href="/coin/<%= c.symbol.replace('-USD','') %>">View →</a>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <footer>
+    <span>CryptoTrack · Blockchain.com Exchange API</span>
+    <span>Rose Lobo · Roll No. 10668 · CRCE · Exp 4B</span>
+  </footer>
+</body>
+</html>

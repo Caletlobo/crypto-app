@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CryptoTrack — Trade</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--bg:#faf8f5;--surface:#fff;--surface2:#f5f2ee;--border:#e8e2d9;--text:#1a1510;--muted:#8a8070;--accent:#c8922a;--accent-light:#fef3e2;--green:#2d7a4f;--green-light:#e8f5ee;--red:#c0392b;--red-light:#fdecea;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+    nav{position:sticky;top:0;z-index:100;background:rgba(250,248,245,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);height:68px;padding:0 3rem;display:flex;align-items:center;justify-content:space-between}
+    .nav-logo{display:flex;align-items:center;gap:0.7rem;text-decoration:none}
+    .logo-box{width:36px;height:36px;background:var(--text);border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700}
+    .logo-name{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;color:var(--text)}
+    .logo-name span{color:var(--accent)}
+    .nav-links{display:flex;align-items:center;gap:0.5rem}
+    .nav-link{text-decoration:none;color:var(--muted);font-size:0.88rem;font-weight:500;padding:0.5rem 0.9rem;border-radius:8px;transition:all 0.2s}
+    .nav-link:hover,.nav-link.active{color:var(--text);background:var(--surface2)}
+    .nav-right{display:flex;align-items:center;gap:1rem}
+    .live-badge{display:flex;align-items:center;gap:0.4rem;background:var(--green-light);color:var(--green);border:1px solid rgba(45,122,79,0.2);border-radius:999px;padding:0.3rem 0.85rem;font-size:0.72rem;font-weight:600}
+    .live-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 1.8s infinite}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}
+    .logout-btn{text-decoration:none;color:var(--muted);font-size:0.82rem;padding:0.4rem 0.8rem;border:1px solid var(--border);border-radius:8px;transition:all 0.2s}
+    .logout-btn:hover{color:var(--red);border-color:var(--red)}
+
+    .page{max-width:1100px;margin:0 auto;padding:2.5rem 3rem}
+
+    .page-header{margin-bottom:2.5rem}
+    .page-title{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:0.3rem}
+    .page-subtitle{color:var(--muted);font-size:0.9rem;font-weight:300}
+
+    .trade-layout{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start}
+
+    /* FORM CARD */
+    .trade-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:2rem;position:relative;overflow:hidden}
+    .trade-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),#d4a843,var(--accent))}
+    .tc-title{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;margin-bottom:0.3rem}
+    .tc-sub{color:var(--muted);font-size:0.82rem;margin-bottom:1.8rem}
+
+    .field{margin-bottom:1.2rem}
+    .field label{display:block;font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem}
+    .field select,.field input{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.93rem;padding:0.85rem 1rem;outline:none;transition:border-color 0.2s,box-shadow 0.2s;appearance:none}
+    .field select:focus,.field input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(200,146,42,0.1)}
+
+    .trade-type-row{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:1.2rem}
+    .type-option{position:relative}
+    .type-option input{position:absolute;opacity:0;width:0;height:0}
+    .type-label{display:flex;align-items:center;justify-content:center;gap:0.4rem;padding:0.8rem;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all 0.2s;font-weight:600;font-size:0.9rem;background:var(--surface2)}
+    .type-option input:checked+.type-label.buy{background:var(--green-light);border-color:var(--green);color:var(--green)}
+    .type-option input:checked+.type-label.sell{background:var(--red-light);border-color:var(--red);color:var(--red)}
+    .type-label:hover{border-color:var(--accent)}
+
+    .submit-btn{width:100%;background:var(--text);color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.95rem;padding:0.95rem;cursor:pointer;transition:all 0.25s;display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-top:0.5rem}
+    .submit-btn:hover{background:var(--accent);transform:translateY(-1px);box-shadow:0 6px 20px rgba(200,146,42,0.3)}
+
+    /* DISCLAIMER */
+    .disclaimer{background:var(--accent-light);border:1px solid rgba(200,146,42,0.2);border-radius:10px;padding:1rem;font-size:0.78rem;color:#7a5820;margin-top:1rem;line-height:1.6}
+    .disclaimer strong{display:block;margin-bottom:0.2rem;color:var(--accent)}
+
+    /* SUCCESS */
+    .success-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:2rem;animation:fadeUp 0.4s ease}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    .success-badge{display:inline-flex;align-items:center;gap:0.5rem;background:var(--green-light);color:var(--green);border:1px solid rgba(45,122,79,0.25);border-radius:999px;padding:0.4rem 1rem;font-size:0.78rem;font-weight:600;margin-bottom:1.5rem}
+    .success-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:700;margin-bottom:0.4rem}
+    .success-sub{color:var(--muted);font-size:0.88rem;margin-bottom:2rem}
+    .trade-summary{background:var(--surface2);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:1.5rem}
+    .ts-row{display:flex;justify-content:space-between;align-items:center;padding:0.9rem 1.2rem;border-bottom:1px solid var(--border)}
+    .ts-row:last-child{border-bottom:none}
+    .ts-label{font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:600}
+    .ts-val{font-weight:600;font-size:0.92rem}
+    .ts-val.green{color:var(--green)}
+    .ts-val.gold{color:var(--accent);font-family:'Cormorant Garamond',serif;font-size:1.1rem}
+    .ts-val.buy-tag{color:var(--green);background:var(--green-light);padding:0.2rem 0.6rem;border-radius:6px;font-size:0.78rem}
+    .ts-val.sell-tag{color:var(--red);background:var(--red-light);padding:0.2rem 0.6rem;border-radius:6px;font-size:0.78rem}
+    .new-trade-btn{display:inline-flex;align-items:center;gap:0.4rem;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.6rem 1.2rem;font-size:0.85rem;font-weight:600;text-decoration:none;color:var(--text);transition:all 0.2s}
+    .new-trade-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+    /* INFO PANEL */
+    .info-panel{display:flex;flex-direction:column;gap:1rem}
+    .info-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem}
+    .ic-title{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;margin-bottom:0.8rem}
+    .ic-item{display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.6rem;font-size:0.85rem;color:var(--muted);line-height:1.5}
+    .ic-item-dot{width:5px;height:5px;background:var(--accent);border-radius:50%;margin-top:0.45rem;flex-shrink:0}
+
+    .error-box{background:var(--red-light);border:1px solid rgba(192,57,43,0.2);border-radius:10px;padding:1rem;color:var(--red);font-size:0.88rem;margin-bottom:1rem}
+
+    footer{border-top:1px solid var(--border);padding:1.5rem 3rem;display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:0.75rem}
+  </style>
+</head>
+<body>
+  <nav>
+    <a class="nav-logo" href="/markets">
+      <div class="logo-box">C</div>
+      <div class="logo-name">Crypto<span>Track</span></div>
+    </a>
+    <div class="nav-links">
+      <a class="nav-link" href="/markets">Markets</a>
+      <a class="nav-link active" href="/trade">Trade</a>
+    </div>
+    <div class="nav-right">
+      <div class="live-badge"><div class="live-dot"></div>Live</div>
+      <a class="logout-btn" href="/logout">Sign out</a>
+    </div>
+  </nav>
+
+  <div class="page">
+    <div class="page-header">
+      <h1 class="page-title">Simulated Trading</h1>
+      <p class="page-subtitle">Practice buying and selling crypto at live market prices</p>
+    </div>
+
+    <div class="trade-layout">
+      <div>
+        <% if(error) { %><div class="error-box">⚠ <%= error %></div><% } %>
+
+        <% if(!success) { %>
+        <div class="trade-card">
+          <div class="tc-title">Place Order</div>
+          <div class="tc-sub">Select an asset and enter the amount</div>
+
+          <form method="POST" action="/trade">
+            <div style="margin-bottom:1.2rem">
+              <div class="field" style="margin-bottom:0.5rem"><label>Order Type</label></div>
+              <div class="trade-type-row">
+                <div class="type-option">
+                  <input type="radio" name="type" id="buy" value="BUY" checked/>
+                  <label class="type-label buy" for="buy">▲ Buy</label>
+                </div>
+                <div class="type-option">
+                  <input type="radio" name="type" id="sell" value="SELL"/>
+                  <label class="type-label sell" for="sell">▼ Sell</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Select Asset</label>
+              <select name="symbol" required>
+                <option value="" disabled selected>Choose cryptocurrency...</option>
+                <% coins.forEach(c => { %>
+                <option value="<%= c.symbol %>"><%= c.icon %> <%= c.label %> (<%= c.symbol %>)</option>
+                <% }) %>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Amount (Units)</label>
+              <input type="number" name="amount" min="0.0001" step="0.0001" placeholder="e.g. 0.5" required/>
+            </div>
+
+            <button type="submit" class="submit-btn">Execute Order →</button>
+          </form>
+
+          <div class="disclaimer">
+            <strong>⚠ Simulation Only</strong>
+            This is a simulated trading environment for educational purposes. No real transactions are made. All prices are fetched live from Blockchain.com API.
+          </div>
+        </div>
+        <% } else { %>
+        <div class="success-card">
+          <div class="success-badge">✓ Order Executed Successfully</div>
+          <div class="success-title">Trade Complete</div>
+          <div class="success-sub">Your simulated order has been placed at live market price</div>
+
+          <div class="trade-summary">
+            <div class="ts-row"><span class="ts-label">Asset</span><span class="ts-val"><%= success.coin.icon %> <%= success.coin.label %></span></div>
+            <div class="ts-row"><span class="ts-label">Order Type</span><span class="ts-val <%= success.type === 'BUY' ? 'buy-tag' : 'sell-tag' %>"><%= success.type %></span></div>
+            <div class="ts-row"><span class="ts-label">Amount</span><span class="ts-val"><%= success.amount %> <%= success.coin.symbol.replace('-USD','') %></span></div>
+            <div class="ts-row"><span class="ts-label">Price per Unit</span><span class="ts-val green">$<%= parseFloat(success.price).toLocaleString('en-US',{minimumFractionDigits:2}) %></span></div>
+            <div class="ts-row"><span class="ts-label">Total Value</span><span class="ts-val gold">$<%= parseFloat(success.total).toLocaleString('en-US',{minimumFractionDigits:2}) %></span></div>
+          </div>
+
+          <a class="new-trade-btn" href="/trade">← Place New Order</a>
+        </div>
+        <% } %>
+      </div>
+
+      <!-- INFO PANEL -->
+      <div class="info-panel">
+        <div class="info-card">
+          <div class="ic-title">How Trading Works</div>
+          <div class="ic-item"><div class="ic-item-dot"></div>Select the asset you want to trade</div>
+          <div class="ic-item"><div class="ic-item-dot"></div>Choose BUY or SELL order type</div>
+          <div class="ic-item"><div class="ic-item-dot"></div>Enter the number of units</div>
+          <div class="ic-item"><div class="ic-item-dot"></div>The app fetches the live market price</div>
+          <div class="ic-item"><div class="ic-item-dot"></div>Total value is calculated automatically</div>
+        </div>
+        <div class="info-card">
+          <div class="ic-title">Available Assets</div>
+          <% coins.forEach(c => { %>
+          <div class="ic-item">
+            <span style="font-size:1rem"><%= c.icon %></span>
+            <span><b><%= c.label %></b> — <%= c.symbol %></span>
+          </div>
+          <% }) %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span>CryptoTrack · Simulated Trading · Blockchain.com API</span>
+    <span>Rose Lobo · Roll No. 10668 · CRCE · Exp 4B</span>
+  </footer>
+</body>
+</html>

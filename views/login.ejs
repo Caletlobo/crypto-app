@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CryptoTrack — Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --surface: #fff;
+      --border: #e8e2d9;
+      --text: #1a1510;
+      --muted: #8a8070;
+      --accent: #c8922a;
+      --accent-light: #fef3e2;
+      --green: #2d7a4f;
+      --green-light: #e8f5ee;
+      --red: #c0392b;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body {
+      background: var(--bg);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    /* LEFT panel */
+    .left {
+      background: var(--text);
+      padding: 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+    .left::before {
+      content: '';
+      position: absolute;
+      top: -100px; right: -100px;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(200,146,42,0.15) 0%, transparent 65%);
+    }
+    .left::after {
+      content: '';
+      position: absolute;
+      bottom: -80px; left: -80px;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(45,122,79,0.1) 0%, transparent 65%);
+    }
+    .left-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      position: relative;
+      z-index: 1;
+    }
+    .logo-box {
+      width: 40px; height: 40px;
+      background: var(--accent);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .logo-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #fff;
+    }
+    .logo-name span { color: var(--accent); }
+
+    .left-content { position: relative; z-index: 1; }
+    .left-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.2rem;
+    }
+    .left-title .gold { color: var(--accent); font-style: italic; }
+    .left-desc { color: rgba(255,255,255,0.5); font-size: 1rem; line-height: 1.7; font-weight: 300; max-width: 360px; }
+
+    .left-coins {
+      display: flex;
+      gap: 0.75rem;
+      position: relative;
+      z-index: 1;
+      flex-wrap: wrap;
+    }
+    .coin-chip {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 999px;
+      padding: 0.4rem 1rem;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.6);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .chip-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+
+    /* RIGHT panel */
+    .right {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+    }
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      animation: fadeUp 0.5s ease forwards;
+    }
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+    .login-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.4rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      letter-spacing: -0.02em;
+    }
+    .login-sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 2.5rem; font-weight: 300; }
+
+    .field { margin-bottom: 1.2rem; }
+    .field label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    .field input {
+      width: 100%;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      padding: 0.85rem 1rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .field input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(200,146,42,0.1);
+    }
+
+    .demo-box {
+      background: var(--accent-light);
+      border: 1px solid rgba(200,146,42,0.2);
+      border-radius: 10px;
+      padding: 0.9rem 1rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.82rem;
+      color: #7a5820;
+    }
+    .demo-box strong { display: block; margin-bottom: 0.3rem; color: var(--accent); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; }
+
+    .error-box {
+      background: #fdecea;
+      border: 1px solid rgba(192,57,43,0.2);
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      margin-bottom: 1.2rem;
+      font-size: 0.85rem;
+      color: var(--red);
+    }
+
+    .login-btn {
+      width: 100%;
+      background: var(--text);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 0.95rem;
+      cursor: pointer;
+      transition: all 0.25s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .login-btn:hover { background: var(--accent); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(200,146,42,0.3); }
+    .login-btn:active { transform: translateY(0); }
+
+    .login-footer { margin-top: 2rem; text-align: center; font-size: 0.78rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="left">
+    <div class="left-logo">
+      <div class="logo-box">C</div>
+      <div class="logo-name">Crypto<span>Track</span></div>
+    </div>
+    <div class="left-content">
+      <h1 class="left-title">Track the<br/><span class="gold">Crypto</span><br/>Markets.</h1>
+      <p class="left-desc">Live prices, real-time charts, and simulated trading — all powered by the Blockchain.com Exchange API.</p>
+    </div>
+    <div class="left-coins">
+      <div class="coin-chip"><div class="chip-dot"></div>Bitcoin</div>
+      <div class="coin-chip"><div class="chip-dot"></div>Ethereum</div>
+      <div class="coin-chip"><div class="chip-dot"></div>Solana</div>
+      <div class="coin-chip"><div class="chip-dot"></div>Cardano</div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="login-card">
+      <h2 class="login-heading">Welcome back</h2>
+      <p class="login-sub">Sign in to access your dashboard</p>
+
+      <div class="demo-box">
+        <strong>Demo Credentials</strong>
+        Username: <b>rose</b> &nbsp;·&nbsp; Password: <b>rose123</b>
+      </div>
+
+      <% if (error) { %><div class="error-box">⚠ <%= error %></div><% } %>
+
+      <form method="POST" action="/login">
+        <div class="field">
+          <label>Username</label>
+          <input type="text" name="username" placeholder="Enter your username" required/>
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" name="password" placeholder="Enter your password" required/>
+        </div>
+        <button type="submit" class="login-btn">Sign In →</button>
+      </form>
+      <div class="login-footer">Experiment 4B · Rose Lobo · Roll No. 10668</div>
+    </div>
+  </div>
+</body>
+</html>
